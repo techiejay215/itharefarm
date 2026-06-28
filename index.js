@@ -58,6 +58,21 @@ app.get('/debug', async (req, res) => {
 });
 
 // ---------------------------------------------------------
+// NEW: List all user document IDs
+// ---------------------------------------------------------
+app.get('/users', async (req, res) => {
+  try {
+    const snapshot = await db.collection('users').get();
+    const ids = snapshot.docs.map(doc => doc.id);
+    console.log('👥 User IDs found:', ids);
+    res.json({ userIds: ids, count: ids.length });
+  } catch (error) {
+    console.error('❌ Error reading users:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ---------------------------------------------------------
 // Endpoint: Send a test notification (with debug logs)
 // ---------------------------------------------------------
 app.get('/send-test-notification', async (req, res) => {
