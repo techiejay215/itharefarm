@@ -58,6 +58,43 @@ app.get('/debug', async (req, res) => {
 });
 
 // ---------------------------------------------------------
+// Debug: show project and database info
+// ---------------------------------------------------------
+app.get('/debug/database', async (req, res) => {
+  try {
+    const projectId = process.env.GCLOUD_PROJECT || 'unknown';
+    const collections = await db.listCollections();
+    const collectionIds = collections.map(col => col.id);
+    console.log(`🔍 Database debug: project=${projectId}, collections=${collectionIds}`);
+    res.json({
+      projectId,
+      collections: collectionIds,
+      databaseId: '(default)'
+    });
+  } catch (error) {
+    console.error('❌ Debug database error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ---------------------------------------------------------
+// Debug: fetch first document from users (to see if any exist)
+// ---------------------------------------------------------
+app.get('/users-first', async (req, res) => {
+  try {
+    const snapshot = await db.collection('users').limit(1).get();
+    if (snapshot.empty) {
+      return res.json({ message: 'No documents in users collection' });
+    }
+    const doc = snapshot.docs[0];
+    res.json({ id: doc.id, data: doc.data() });
+  } catch (error) {
+    console.error('❌ Error fetching first user:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ---------------------------------------------------------
 // List all user document IDs
 // ---------------------------------------------------------
 app.get('/users', async (req, res) => {
