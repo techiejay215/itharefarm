@@ -78,6 +78,24 @@ app.get('/debug/database', async (req, res) => {
 });
 
 // ---------------------------------------------------------
+// Debug: list first 5 documents from every collection
+// ---------------------------------------------------------
+app.get('/debug/all-docs', async (req, res) => {
+  try {
+    const collections = await db.listCollections();
+    const result = {};
+    for (const col of collections) {
+      const snapshot = await col.limit(5).get();
+      result[col.id] = snapshot.docs.map(doc => doc.id);
+    }
+    res.json(result);
+  } catch (error) {
+    console.error('❌ Error listing all docs:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ---------------------------------------------------------
 // Debug: fetch first document from users (to see if any exist)
 // ---------------------------------------------------------
 app.get('/users-first', async (req, res) => {
