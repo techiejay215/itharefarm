@@ -58,7 +58,7 @@ app.get('/debug', async (req, res) => {
 });
 
 // ---------------------------------------------------------
-// NEW: List all user document IDs
+// List all user document IDs
 // ---------------------------------------------------------
 app.get('/users', async (req, res) => {
   try {
@@ -68,6 +68,26 @@ app.get('/users', async (req, res) => {
     res.json({ userIds: ids, count: ids.length });
   } catch (error) {
     console.error('❌ Error reading users:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ---------------------------------------------------------
+// Fetch a specific user by ID (to test read permissions)
+// ---------------------------------------------------------
+app.get('/user/:userId', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    console.log(`🔍 Fetching user: ${userId}`);
+    const doc = await db.collection('users').doc(userId).get();
+    if (!doc.exists) {
+      console.log(`❌ User ${userId} does not exist`);
+      return res.status(404).json({ error: 'User not found' });
+    }
+    console.log(`✅ User ${userId} found:`, doc.data());
+    res.json({ id: doc.id, data: doc.data() });
+  } catch (error) {
+    console.error('❌ Error fetching user:', error);
     res.status(500).json({ error: error.message });
   }
 });
