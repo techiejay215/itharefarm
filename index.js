@@ -36,23 +36,31 @@ app.get('/', (req, res) => {
 });
 
 // ---------------------------------------------------------
-// Endpoint: Send a test notification (for debugging)
+// Endpoint: Send a test notification (with debug logs)
 // ---------------------------------------------------------
 app.get('/send-test-notification', async (req, res) => {
   try {
     console.log('📤 Fetching all users and tokens...');
     const usersSnapshot = await db.collection('users').get();
+    console.log(`📊 Found ${usersSnapshot.size} users`); // <-- NEW
+
     let totalTokens = [];
     
     for (const userDoc of usersSnapshot.docs) {
+      console.log(`👤 User: ${userDoc.id}`); // <-- NEW
+
       const tokensSnapshot = await db
         .collection('users')
         .doc(userDoc.id)
         .collection('tokens')
         .get();
+      
       const tokens = tokensSnapshot.docs
         .map(doc => doc.data().token)
         .filter(token => token && token.length > 0);
+      
+      console.log(`🔑 Found ${tokens.length} tokens for user ${userDoc.id}`); // <-- NEW
+      
       totalTokens = totalTokens.concat(tokens);
     }
 
@@ -102,7 +110,7 @@ app.get('/send-test-notification', async (req, res) => {
 });
 
 // ---------------------------------------------------------
-// NEW: Daily Motivation Endpoint (Runs at 6:00 AM EAT)
+// Daily Motivation Endpoint (Runs at 6:00 AM EAT)
 // ---------------------------------------------------------
 const quotes = [
   "It's gonna be a great day – make it count!",
@@ -125,9 +133,8 @@ app.get('/daily-motivation', async (req, res) => {
 
     for (const userDoc of usersSnapshot.docs) {
       const userData = userDoc.data();
-      const name = userData.name || 'Farmer'; // Fallback if name is missing
+      const name = userData.name || 'Farmer';
 
-      // Get tokens for this specific user
       const tokensSnapshot = await db
         .collection('users')
         .doc(userDoc.id)
@@ -138,9 +145,8 @@ app.get('/daily-motivation', async (req, res) => {
         .map(doc => doc.data().token)
         .filter(token => token && token.length > 0);
 
-      if (tokens.length === 0) continue; // Skip users without devices
+      if (tokens.length === 0) continue;
 
-      // Pick a random quote
       const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
 
       const message = {
