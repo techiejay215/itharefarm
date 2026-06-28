@@ -36,18 +36,40 @@ app.get('/', (req, res) => {
 });
 
 // ---------------------------------------------------------
+// Debug endpoint – list collections and project ID
+// ---------------------------------------------------------
+app.get('/debug', async (req, res) => {
+  try {
+    const projectId = process.env.GCLOUD_PROJECT || 'unknown';
+    console.log(`🔍 Debug: Project ID = ${projectId}`);
+
+    const collections = await db.listCollections();
+    const collectionIds = collections.map(col => col.id);
+    console.log('📂 Collections found:', collectionIds);
+
+    res.json({
+      projectId,
+      collections: collectionIds,
+    });
+  } catch (error) {
+    console.error('❌ Debug error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ---------------------------------------------------------
 // Endpoint: Send a test notification (with debug logs)
 // ---------------------------------------------------------
 app.get('/send-test-notification', async (req, res) => {
   try {
     console.log('📤 Fetching all users and tokens...');
     const usersSnapshot = await db.collection('users').get();
-    console.log(`📊 Found ${usersSnapshot.size} users`); // <-- NEW
+    console.log(`📊 Found ${usersSnapshot.size} users`);
 
     let totalTokens = [];
     
     for (const userDoc of usersSnapshot.docs) {
-      console.log(`👤 User: ${userDoc.id}`); // <-- NEW
+      console.log(`👤 User: ${userDoc.id}`);
 
       const tokensSnapshot = await db
         .collection('users')
@@ -59,7 +81,7 @@ app.get('/send-test-notification', async (req, res) => {
         .map(doc => doc.data().token)
         .filter(token => token && token.length > 0);
       
-      console.log(`🔑 Found ${tokens.length} tokens for user ${userDoc.id}`); // <-- NEW
+      console.log(`🔑 Found ${tokens.length} tokens for user ${userDoc.id}`);
       
       totalTokens = totalTokens.concat(tokens);
     }
