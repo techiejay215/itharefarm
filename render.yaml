@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: itharefarm-dairy
+    runtime: image
+    repo: https://github.com/techiejay215/itharefarm
+    plan: free
+    region: oregon
+    dockerfilePath: ./Dockerfile
+    buildCommand: flutter build web --release
+    staticPublishPath: ./build/web
+    envVars:
+      - key: FLUTTER_ROOT
+        value: /usr/local/flutter

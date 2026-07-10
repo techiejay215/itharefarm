@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "191876069585",
+    "project_id": "itharefarmsync-a57ff",
+    "storage_bucket": "itharefarmsync-a57ff.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:191876069585:android:fc2d0c444d071b49186df0",
+        "android_client_info": {
+          "package_name": "com.company.ithare_farm_final"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-Gup8AwM8g-mwdlGpva3H95P1gb0dW3w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

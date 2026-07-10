@@ -1,0 +1,14 @@
+name: Send Daily Motivation
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+jobs:
+  send-notification:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Daily Motivation Endpoint
+        run: |
+          curl -X GET https://itharefarm-1.onrender.com/daily-motivation

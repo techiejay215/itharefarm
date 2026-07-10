@@ -1,0 +1,62 @@
+name: ithare_farm_final
+description: Ithare Farm Dairy Manager - Complete farm management app
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # UI & Core
+  cupertino_icons: ^1.0.8
+  shared_preferences: ^2.3.5
+  intl: ^0.19.0
+
+  # Database & File
+  sqflite: ^2.4.0
+  path_provider: ^2.1.5
+  path: ^1.9.1
+  
+  fl_chart: ^0.70.2
+
+  # Sharing & Export
+  share_plus: ^10.1.0
+  csv: ^5.1.0
+  permission_handler: ^11.3.1
+
+  # Firebase
+  firebase_core: ^3.11.0
+  firebase_auth: ^5.5.0
+  cloud_firestore: ^5.6.12
+  firebase_messaging: ^15.2.0
+  flutter_local_notifications: ^18.0.0
+  http: ^1.3.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+  flutter_launcher_icons: ^0.13.1
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/
+    - assets/icon/
+    # 👇 UPDATED PATH TO MATCH YOUR NEW LOCATION
+    - assets/images/40b1c96e-04b8-48d3-9fa2-e89efea647ee.png
+    - assets/images/
+    - assets/images/farm_bg.jpg
+    - assets/images/black-white-cow-grazing-meadow_190619-2738.jpg
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/d75d4c1d-f772-4dc1-9660-ad79aac65e6e.png"
+  adaptive_icon_background: "#2E7D32"
+  adaptive_icon_foreground: "assets/icon/d75d4c1d-f772-4dc1-9660-ad79aac65e6e.png"
+  remove_alpha_ios: true

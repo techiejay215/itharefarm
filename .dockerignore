@@ -1,0 +1,13 @@
+.git
+.gitignore
+.dart_tool
+build
+pubspec.lock
+README.md
+*.log
+*.iml
+*.iws
+.idea
+.vscode
+node_modules
+ithare-notification-server/

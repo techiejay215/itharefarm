@@ -1,0 +1,82 @@
+// lib/database/health_dao.dart
+
+import 'package:sqflite/sqflite.dart';
+import 'database_helper.dart';
+
+class HealthDao {
+  static Future<Database> get _db async => (await DatabaseHelper().database);
+
+  // Get all health records
+  static Future<List<Map<String, dynamic>>> getAllHealthRecords() async {
+    return await (await _db).query(
+      'health_records',
+      orderBy: 'date DESC',
+    );
+  }
+
+  // Get health records for a specific animal
+  static Future<List<Map<String, dynamic>>> getHealthRecordsForAnimal(int animalId) async {
+    return await (await _db).query(
+      'health_records',
+      where: 'animal_id = ?',
+      whereArgs: [animalId],
+      orderBy: 'date DESC',
+    );
+  }
+
+  // Get health records by type
+  static Future<List<Map<String, dynamic>>> getHealthRecordsByType(String type) async {
+    return await (await _db).query(
+      'health_records',
+      where: 'type = ?',
+      whereArgs: [type],
+      orderBy: 'date DESC',
+    );
+  }
+
+  // Get today's health tasks (vaccinations/deworming due)
+  static Future<List<Map<String, dynamic>>> getTodaysHealthTasks() async {
+    final today = DateTime.now().toIso8601String().split('T')[0];
+    return await (await _db).rawQuery('''
+      SELECT * FROM health_records 
+      WHERE next_due = ? OR date = ?
+      ORDER BY date ASC
+    ''', [today, today]);
+  }
+
+  // Insert health record
+  static Future<int> insertHealthRecord(Map<String, dynamic> record) async {
+    return await (await _db).insert('health_records', record);
+  }
+
+  // Update health record
+  static Future<int> updateHealthRecord(int id, Map<String, dynamic> record) async {
+    return await (await _db).update(
+      'health_records',
+      record,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  // Delete health record
+  static Future<int> deleteHealthRecord(int id) async {
+    return await (await _db).delete(
+      'health_records',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  // Get upcoming health tasks (next 7 days)
+  static Future<List<Map<String, dynamic>>> getUpcomingHealthTasks() async {
+    final today = DateTime.now().toIso8601String().split('T')[0];
+    final nextWeek = DateTime.now().add(const Duration(days: 7)).toIso8601String().split('T')[0];
+    
+    return await (await _db).rawQuery('''
+      SELECT * FROM health_records 
+      WHERE next_due BETWEEN ? AND ?
+      ORDER BY next_due ASC
+    ''', [today, nextWeek]);
+  }
+}
